@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>Test 6</title>
+        <script src="sxz.js"></script>
+	</head>
+	<body>
+    <img src="lena_std.jpg" align="left" alt="original image" /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+    <canvas id="canvasid" width="512" height = "512"></canvas>
+
+	<script>
+
+        var canvas = document.getElementById('canvasid');
+        var sxz = new Sxz();
+        sxz.Load(sxz, "lena_std.sxz", canvas, null);
+    </script>
+	</body>
+</html>

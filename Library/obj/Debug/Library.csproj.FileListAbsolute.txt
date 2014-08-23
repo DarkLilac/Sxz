@@ -1,0 +1,5 @@
+C:\home\chris\Sxz\Library\bin\Debug\Library.dll
+C:\home\chris\Sxz\Library\bin\Debug\Library.pdb
+C:\home\chris\Sxz\Library\obj\Debug\Library.dll
+C:\home\chris\Sxz\Library\obj\Debug\Library.pdb
+C:\home\chris\Sxz\Library\obj\Debug\ResolveAssemblyReference.cache
