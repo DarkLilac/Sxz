@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>Art Direction demo</title>
-        <script src="sxz.js"></script>
+        <script src="http://htmlpreview.github.io/?https://github.com/DarkLilac/Sxz/blob/master/Polyfill/sxz.js"></script>
 	</head>
 	<body>
     <canvas id="canvasid" style="border:1px solid #000000;" width="480" height="480"></canvas> (click to scale the logo)
@@ -20,15 +20,15 @@
 	    ctx.fill();
 
         var sxz = new Sxz();
-        sxz.Load(sxz, "sxz_with_white_background.sxz", canvas, MouseDown);
+        sxz.Load(sxz, "http://htmlpreview.github.io/?https://github.com/DarkLilac/Sxz/blob/master/Polyfill/sxz_with_white_background.sxz", canvas, MouseDown);
 
         var canvas2 = document.getElementById('canvasid2');
         var sxz2 = new Sxz();
-        sxz2.Load(sxz2, "sxz_with_white_background.sxz", canvas2, MouseDown2);
+        sxz2.Load(sxz2, "http://htmlpreview.github.io/?https://github.com/DarkLilac/Sxz/blob/master/Polyfill/sxz_with_white_background.sxz", canvas2, MouseDown2);
 
         var canvas3 = document.getElementById('canvasid3');
         var sxz3 = new Sxz();
-        sxz3.Load(sxz3, "sxz_with_white_background.sxz", canvas3, MouseDown3);
+        sxz3.Load(sxz3, "http://htmlpreview.github.io/?https://github.com/DarkLilac/Sxz/blob/master/Polyfill/sxz_with_white_background.sxz", canvas3, MouseDown3);
 
         function MouseDown(event) {
             //alert('mouse down');
