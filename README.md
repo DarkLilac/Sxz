@@ -12,3 +12,9 @@ Sxz is a patent-unecumbered image format.
 
 <h3>Design</h3>
 Sxz draws heavily from PNG.  It has no built in compression relying on an outside mechanism such as gzip.  It uses paletted index only color storage, but allows for multiple palettes per image.  Each image consists of one or more frames with one or more chunks in each frame.  The interpretation of each frame is left to the decoder.
+
+<h3>Platform</h3>
+Tested on Firefox 29+ and Chrome 36
+
+<h3>Demos</h3>
+Demos are located in the Polyfill folder
