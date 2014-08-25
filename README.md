@@ -4,7 +4,7 @@ Sxz
 Sxz Reference Implementation
 
 <h3>About</h3>
-Sxz is a hybrid vector/raster binary image format designed for low-entropy(non-photographic) images.  Sxz can attain superior compression over PNG in some cases, but not all do to the immaturity of the encoder.  Two decoders are provided in C# and Javascript for demonstration.
+Sxz is a hybrid vector/raster binary image format designed for low-entropy(non-photographic) images.  Sxz can attain superior compression over PNG in some cases, but not all due to the immaturity of the encoder.  Two decoders are provided in C# and Javascript for demonstration.
 
 The Sxz Reference Implementation is released under LGPL license.  The Sxz Polyfill in Javascript is released under MIT license.  The Polyfill demos are released on CC0 license.
 
