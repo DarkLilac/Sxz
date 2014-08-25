@@ -103,8 +103,8 @@ namespace Test
 
         private static bool TestBoolsToBytes()
         {
-            bool[] input = { false, false, true, true, true, true, false, false, 
-                               true, true, true, true, true, true, true, true, 
+            bool[] input = { false, false, true, true, true, true, false, false,
+                               true, true, true, true, true, true, true, true,
                                true, true, true, true, false, false, true, true };
             Console.WriteLine("Have input length " + input.Length);
 
@@ -125,7 +125,7 @@ namespace Test
             }
 
             Console.WriteLine(string.Empty);
-            
+
             byte[] array = values.ToArray();
             ColorBitPlaneChunk.UnFilter(array);
             int index = 0;

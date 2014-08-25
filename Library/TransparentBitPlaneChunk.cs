@@ -57,7 +57,7 @@ namespace Library
 
         public void Initialize()
         {
-            BitPlane = new BitPlane(Width * Height, Width);       
+            BitPlane = new BitPlane(Width * Height, Width);
         }
 
         public void SetColor(int x, int y)

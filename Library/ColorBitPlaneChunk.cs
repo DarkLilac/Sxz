@@ -144,7 +144,7 @@ namespace Library
             switch (Direction)
             {
                 case Direction.Left:
-                    for (int x = Width - 1; x >= 0; x--) 
+                    for (int x = Width - 1; x >= 0; x--)
                     {
                         for (int y = 0; y < Height; y++)
                         {
