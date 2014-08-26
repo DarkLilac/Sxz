@@ -1,4 +1,4 @@
-﻿/*
+/*
 The Sxz Polyfill is released under the MIT License.
 */
 function Sxz() {
@@ -72,6 +72,26 @@ function Sxz() {
             this.RenderFrame(context, frame, boundingBox);
         }
     }
+
+	this.LoadLocal = function (data, canvas, callback) {
+		if (typeof (callback) != 'undefined') {
+			canvas.addEventListener('mousedown', callback, false);
+		}
+
+		var raw = window.atob(data);
+		var rawLength = raw.length;
+		//parse the data here
+		var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+		for (i = 0; i < rawLength; i++) {
+			array[i] = raw.charCodeAt(i);
+		}
+
+		this.Container.SetData(array);
+		this.Canvas = canvas;
+
+		this.Render();
+	}
 }
 
 Sxz.prototype.Load = function (sxz, url, canvas, callback) {
