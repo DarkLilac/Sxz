@@ -20,4 +20,8 @@ Sxz supports two important features of responsive imaging.  It can do clickable 
 Tested on Firefox 29+ and Chrome 36
 
 <h3>Demos</h3>
-Demos are located in the Polyfill folder along with the Javascript raster sxz.js.
+Demos are located in the Polyfill folder along with the Javascript decoder/rasterer sxz.js.<br />
+<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/art_direction_demo_base64.html">Art Direction</a> <br />
+<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/click_by_chunk_demo_base64.html">Image Map Demo</a> <br />
+<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/click_by_location_demo_base64.html">Another Image Map Demo</a><br />
+<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/image_with_hole_demo_base64.html">Image with a hole, and clickable</a><br />
