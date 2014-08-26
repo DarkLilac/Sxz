@@ -104,11 +104,6 @@ Sxz.prototype.Load = function (sxz, url, canvas, callback) {
 
     xhr.onload = function () {
         var data = new Uint8Array(xhr.response || xhr.mozResponseArrayBuffer);
-        //parse the data here
-        var result = new ArrayBuffer(data.length);
-        for (var i = 0; i < data.length; i++) {
-            result[i] = data[i];
-        }
 
         sxz.Container.SetData(data);
         sxz.Canvas = canvas;
