@@ -139,7 +139,6 @@ namespace Parser
             HashSet<Location> locations = locationPool.GetByColor(backgroundColor);
             if (parseBackground && locations.Count > 0)
             {
-                
                 if (backgroundType == BackgroundType.Background)
                 {
                     Console.WriteLine("Creating background chunk");

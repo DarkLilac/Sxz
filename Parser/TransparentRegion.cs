@@ -76,7 +76,7 @@ namespace Parser
             {
                 transparentChunk.SetColor(location.Point.X, location.Point.Y);
             }
-            
+
             result.Add(transparentChunkContainer);
             return result;
         }
