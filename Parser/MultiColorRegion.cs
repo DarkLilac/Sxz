@@ -126,7 +126,7 @@ namespace Parser
                 container.Chunk = rectangleChunk;
                 container.Locations = Locations;
                 rectangleChunk.Palette = Palette.GetPaletteChunk();
-                
+
                 foreach (Location location in Locations)
                 {
                     rectangleChunk.SetColor(location.Color, location.Point.X, location.Point.Y);
@@ -146,7 +146,7 @@ namespace Parser
             colorBitPlaneChunk.Initialize();
             chunkContainer.Chunk = colorBitPlaneChunk;
             chunkContainer.Locations = Locations;
-            
+
             foreach (Location location in Locations)
             {
                 //bitmask must use local coordinates

@@ -56,7 +56,6 @@ namespace SxzReader
                     if (colorInput.Equals("none"))
                     {
                         parseBackground = false;
-                        
                     }
                     else if (colorInput.Equals("mostcommon"))
                     {
