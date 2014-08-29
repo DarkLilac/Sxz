@@ -1,23 +1,53 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-	<head>
-		<title>Art Direction demo</title>
-        <script src="sxz.js"></script>
-	</head>
-	<body>
-    <canvas id="canvasid" style="border:1px solid #000000;" width="480" height="480"></canvas> (click to scale the logo)
-     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-     <canvas id="canvasid2" style="border:1px solid #000000;" width="160" height="160"></canvas>
-     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-     <canvas id="canvasid3" style="border:1px solid #000000;" width="320" height="320"></canvas>
-	<script>
+<head>
+    <title>Art Direction demo</title>
+    <script src="sxz.js"></script>
+    <style>
+        .first
+        {
+            width: 500px;
+            height: 500px;
+        }
+        .second
+        {
+            width: 500px;
+            height: 200px;
+        }
+        .third
+        {
+            width: 500px;
+            height: 340px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Sxz Image Scaling Example</h1>
+    <div>
+        <p>
+            Click each logo to scale the logo in the first two examples, and repeatedly click
+            the third to move the letters. Notice that the image has a white background that
+            is not moved or scaled since it resides in a separate frame.
+        </p>
+    </div>
+    <div class="first">
+        <canvas id="canvasid" style="border: 1px solid #000000;" width="480" height="480"></canvas>
+    </div>
+    <div class="second">
+        <canvas id="canvasid2" style="border: 1px solid #000000;" width="160" height="160"></canvas>
+    </div>
+    <div class="third">
+        <canvas id="canvasid3" style="border: 1px solid #000000;" width="320" height="320"></canvas>
+    </div>
+    <script>
 
-	    var canvas = document.getElementById('canvasid');
+        var canvas = document.getElementById('canvasid');
 
-	    var ctx = canvas.getContext("2d");
-	    ctx.rect(0, 0, canvas.width, canvas.height);
-	    ctx.fillStyle = "blue";
-	    ctx.fill();
+        var ctx = canvas.getContext("2d");
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "blue";
+        ctx.fill();
 
         var sxz = new Sxz();
         sxz.Load(sxz, "sxz_with_white_background.sxz", canvas, MouseDown);
@@ -71,5 +101,5 @@
         }
 
     </script>
-	</body>
+</body>
 </html>

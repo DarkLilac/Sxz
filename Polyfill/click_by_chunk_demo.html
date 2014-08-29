@@ -1,18 +1,58 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-	<head>
-		<title>Click By Chunk Demo</title>
-        <script src="sxz.js"></script>
-	</head>
-	<body>
-    <img src="sxz.png" align="left" alt="original png image" /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <canvas id="canvasid" width="600" height="200"></canvas>
-
-	<script>
-	    var canvas = document.getElementById('canvasid');
-	    var sxz = new Sxz();
-	    sxz.Load(sxz, "sxz.sxz", canvas, MouseDown);
-	    var previousChunk = null;
+<head>
+    <title>Click By Chunk Demo</title>
+    <script src="sxz.js"></script>
+    <style>
+        .container
+        {
+            width: 600px;
+        }
+        
+        .first
+        {
+            float: left;
+            height: 70px;
+            width: 300px;
+        }
+        
+        .second
+        {
+            float: left;
+            height: 50px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Sxz Image Map by Chunk</h1>
+    <p>
+        Click the Sxz logo on the right to demonstrate an image map which highlights the
+        chunk and pops up another window with the color of the pixel clicked on.
+    </p>
+    <div class="container">
+        <div class="first">
+            <img src="sxz.png" align="left" alt="original png image" />
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        </div>
+        <div class="first">
+            <canvas id="canvasid" width="600" height="200"></canvas>
+        </div>
+        <div class="second">
+            <p>
+                PNG Image(2435 bytes)</p>
+        </div>
+        <div class="second">
+            <p>
+                Sxz Image(3377 bytes uncompressed, 2377 bytes compressed with gzip)</p>
+        </div>
+    </div>
+    <script>
+        var canvas = document.getElementById('canvasid');
+        var sxz = new Sxz();
+        sxz.Load(sxz, "sxz.sxz", canvas, MouseDown);
+        var previousChunk = null;
 
         function MouseDown(event) {
             var x = event.pageX;
@@ -44,5 +84,5 @@
             sxz.Render();
         }
     </script>
-	</body>
+</body>
 </html>

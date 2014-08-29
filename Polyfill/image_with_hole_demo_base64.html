@@ -1,16 +1,62 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-	<head>
-		<title>Image With Hole Demo</title>
-        <script src="sxz.js"></script>
-	</head>
-	<body>
-    <img src="redbluegreenwithhole.png" align="left" alt="original png image" /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <canvas id="canvasid" height="400"></canvas>
-    <p>Image with a hole where is no data on the interior, not even a bitplane.  Click on colors for image map behavior.
-    </p>
-	<script>
-	    var binaryArray = "U1haRlI+AAAAUEIAywUFTVLwADoAAAAAAABQQgADoSVNUkEAdgAAADoAAE1SPgB2ALIAOgAAUEIABSXLTVLwADcAAACwAAA=";
+<head>
+    <title>Image With Hole Demo</title>
+    <script src="sxz.js"></script>
+    <style>
+        .container
+        {
+            width: 600px;
+        }
+        
+        .first
+        {
+            float: left;
+            height: 270px;
+            width: 300px;
+        }
+        
+        .second
+        {
+            float: left;
+            height: 50px;
+            width: 300px;
+        }
+        
+        .description
+        {
+            height: 50px;
+            width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Sxz Image with Hole</h1>
+    <div class="container">
+        <div class="first">
+            <img src="redbluegreenwithhole.png" align="left" alt="original png image" />
+        </div>
+        <div class="first">
+            <canvas id="canvasid" height="400"></canvas>
+        </div>
+        <div class="second">
+            <p>
+                PNG Image (535 bytes with PNGCrush)</p>
+        </div>
+        <div class="second">
+            <p>
+                Sxz Image (71 bytes uncompressed)</p>
+        </div>
+    </div>
+    <div class="description">
+        <p>
+            Description: Image with a hole where is no data on the interior, not even a bitplane.
+            Round images are possible too. Click on the Sxz image on the right to popup the
+            color clicked on.</p>
+    </div>
+    <script>
+        var binaryArray = "U1haRlI+AAAAUEIAywUFTVLwADoAAAAAAABQQgADoSVNUkEAdgAAADoAAE1SPgB2ALIAOgAAUEIABSXLTVLwADcAAACwAAA=";
         var canvas = document.getElementById('canvasid');
         var sxz = new Sxz();
         sxz.LoadLocal(binaryArray, canvas, MouseDown);
@@ -24,14 +70,15 @@
             //alert('clicked ' + x + ' ' + y);
 
             var chunk = sxz.Container.Frames[0].GetSelected(x, y);
-			if (chunk == null) return;
+            if (chunk == null) return;
             //alert('have chunk ' + chunk);
             var color = chunk.GetColor(x, y);
             chunk.MouseDown();
-            alert(color.Hex());
+
             sxz.Render();
             setInterval(function () { chunk.MouseUp(); sxz.Render(); }, 1000);
+            alert(color.Hex());
         }
     </script>
-	</body>
+</body>
 </html>
