@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>Text Flow Around Sxz Image</title>
+    <script src="sxz.js"></script>
+    <style>
+        .container
+        {
+            width: 910px;
+        }
+        
+        .first
+        {
+            float: left;
+            height: 70px;
+            width: 600px;
+        }
+        
+        .second
+        {
+            float: left;
+            height: 50px;
+            width: 300px;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Text Flow Around Sxz Image</h1>
+        <div class="container">
+    <p>
+        Since a Sxz image need not be rectangular, text can be drawn around an image in a non-rectangular fashion.  Inpsired by this site's <a href="http://razvancaliman.com/writing/css-shapes-editor-chrome/">CSS Shapes</a> editor.
+        The distinction is that paths are not required since Sxz has an irregular border once the white background of the image below was removed when it was converted from PNG to Sxz.  This demo is limited owing to a lack
+        of completeness for laying out text and drawing on the Canvas element.  It's assumed that a web browser's first class support for Sxz would render better.  Image courtesy of <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Wikipedia-W-visual-balanced.svg/500px-Wikipedia-W-visual-balanced.svg.png">Wikimedia</a>.
+
+    </p>
+    </div>
+    <div class="container">
+        <div class="first">
+            <canvas id="canvasid" width="600" height="600" style="border: 1px solid #000000;"></canvas>
+        </div>
+        <div class="second">              
+            <form><textarea id="mainInput" rows="20" cols="50">Alas! he gets nothing by that. In our last conflict four of his five wits went halting off, and 
+now is the whole man governed with one: so that if 
+he have wit enough to keep himself warm, let him 
+bear it for a difference between himself and his 
+horse; for it is all the wealth that he hath left 
+to be known a reasonable creature. Who is his 
+companion now? He hath every month a new sworn brother. -Much Ado About Nothing</textarea> <input type="button" title="Draw"  value="Draw"  onclick="DrawText();" /></form>
+        </div>
+    </div>
+    <script>
+        var binaryArray = "U1haRlJcEAAATVIhADQA9QCSAABNUhkAPQBeADgAAE1SFwA0ANUAOAAATVIfACMAKAEEAQBNUhQALgB1AHwAAE1SGgAjAK8ADAEATVIVACsAigCvAABNUhQALQAXAdIAAE1SEgAxAJ8A2QAATVJQAAoAcQE4AABNUhQAJgDmAGwAAE1SSwAKABEBOAAATVIZABgARQA4AABNUjEACgCkADgAAE1SDQAjAI4BQgAATVIhAAwABAHGAABNUg0AGgArAUIAAE1SDAAZAGkAdQAATVIcAAoAdwA4AABNUgoAHACxAPAAAE1SDAAXAIkAmAAATVIMABcAKwHtAABNUgsAGQBKAe4AAE1SCwAZAF0BwgAATVIRABAALwEnAQBNUgoAGwBqAaQAAE1SCgAbAHQBjQAATVIMABYAfgF2AABNUhkACgAsADgAAE1SCgAZAJUA2gAATVIIAB8AVQHVAABNUgkAGQCAAKoAAE1SDwAPAIUBZgAATVIKABUADQHSAABNUgoAFADJAAcBAE1SCgAUAMsAQgAATVIKABQA0wD0AABNUgoAFADfAN0AAE1SCgAUAB0BbAAATVILABIA6wDGAABNUgkAFQCfAMQAAE1SCwARABMBgQAATVINAA4AtQAvAQBNUg0ADgAkAV0AAE1SCQAUAHcAaAAATVIUAAkA7AA4AABNUgsAEABTAFAAAE1SCAAVACAB / wAATVIJABIA + gCAAABNUggAFADeAGwAAE1SCQAQAKYACgEATVIMAAwAmwFCAABNUggAEQAWAbUAAE1SAwArAEcB9QAATVILAAsAOAFCAABNUggADwDtAJIAAE1SBwAQAOwAXAAATVIGABAAZAGyAABNUhEABQDiANgAAE1SBwAMAG4AjgAATVIGAA4AiQCKAABNUgYADgC7AP4AAE1SBgAOAH4BjAAATVIGAA0AKwHgAABNUgsABwAyATcBAE1SBwAKANgA6gAATVIFAA4AUAHgAABNUgYACwBjAHUAAE1SBgALAHoAqgAATVIGAAsAjwDaAABNUgYACwBKAQcBAE1SBgALAF0B2wAATVIGAAsAaAHCAABNUgoABgA7AEIAAE1SCgAGAMEAQgAATVIFAAwAEgHnAABNUgwABQCCAUIAAE1SBAAOADcB9gAATVIEAA4AegF / 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";
+
+        var canvas = document.getElementById('canvasid');
+        var sxz = new Sxz();
+        sxz.LoadLocal(binaryArray, canvas, MouseDown);
+        for (var i = 0; i < sxz.Container.Frames.length; i++) {
+            var frame = sxz.Container.Frames[i];
+            for (var j = 0; j < frame.Chunks.length; j++) {
+                var chunk = frame.Chunks[j];
+                if (chunk.IsPalette() == true || chunk.IsBackground() == true) {
+                    continue;
+                }
+
+                chunk.Origin.X = chunk.Origin.X + 100;
+                if (chunk.Origin.X < 0) {
+                    chunk.Origin.X = 0;
+                }
+
+                chunk.Origin.Y = chunk.Origin.Y + 50;
+                if (chunk.Origin.Y < 0) {
+                    chunk.Origin.Y = 0;
+                }
+            }
+        }
+
+        sxz.Render();
+
+        //write some text
+        var context = canvas.getContext('2d');
+        var maxWidth = 400;
+        var lineHeight = 25;
+        var x = 50;
+        var y = 75;
+
+        context.font = '16pt Calibri';
+        context.fillStyle = '#333';
+
+        wrapText(context, document.getElementById("mainInput").value, x, y, maxWidth, lineHeight);
+
+        function MouseDown(event) {
+            var x = event.pageX;
+            var y = event.pageY;
+
+            x -= sxz.Canvas.offsetLeft;
+            y -= sxz.Canvas.offsetTop;
+
+            //alert(sxz.HoritontalDistanceTo(y) - x);
+        }
+
+        function DrawText() {
+            canvas.width = canvas.width;
+            text = document.getElementById("mainInput").value;
+            
+            sxz.Render();
+            var context = canvas.getContext('2d');
+            context.font = '16pt Calibri';
+            context.fillStyle = '#333';
+            wrapText(context, text, x, y, maxWidth, lineHeight);
+        }
+ 
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            var words = text.split(' ');
+            var line = '';
+
+            for(var n = 0; n < words.length; n++) {
+                var testLine = line + words[n] + ' ';
+                var metrics = context.measureText(testLine);
+                //put a little 5 pixel buffer around image
+                var lineWidth = sxz.HoritontalDistanceTo(y - Math.round(lineHeight / 2)) - x - 5;
+                if (lineWidth > maxWidth) {
+                    lineWidth = maxWidth;
+                }
+                var testWidth = metrics.width;
+                if (testWidth > lineWidth && n > 0) {
+                    context.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                }
+                else {
+                    line = testLine;
+                }
+            }
+            context.fillText(line, x, y);
+        }
+    </script>
+</body>
+</html>
