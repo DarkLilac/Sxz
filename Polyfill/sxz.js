@@ -91,7 +91,21 @@ function Sxz() {
 		this.Canvas = canvas;
 
 		this.Render();
-	}
+    }
+
+    this.HoritontalDistanceTo = function (y) {
+        var result = 9007199254740992;
+        for (var f = 0; f < this.Container.Frames.length; f++) {
+            var frame = this.Container.Frames[f];
+
+            var temp = frame.HorizontalDistanceTo(y);
+            if (temp < result) {
+                result = temp;
+            }
+        }
+
+        return result;
+    }
 }
 
 Sxz.prototype.Load = function (sxz, url, canvas, callback) {
@@ -229,6 +243,38 @@ function Frame() {
         }
 
         return null;
+    }
+
+    this.HorizontalDistanceTo = function (y) {
+        var result = 9007199254740992;
+        for (var i = this.Chunks.length - 1; i >= 0; i--) {
+            var chunk = this.Chunks[i];
+            if (chunk.IsPalette()) {
+                continue;
+            }
+
+            if (chunk.IsBackground()) {
+                continue;
+            }
+
+            var dimensions = chunk.GetDimensions();
+            if (y > dimensions.Y + chunk.Origin.Y) {
+                continue;
+            }
+
+            if (y < chunk.Origin.Y) {
+                continue;
+            }
+
+            var temp = chunk.HorizontalDistanceTo(y);
+            if (temp != null) {
+                if (temp < result) {
+                    result = temp;
+                }
+            }
+        }
+
+        return result;
     }
 
     this.SetData = function (data, index, size) {
@@ -447,6 +493,18 @@ function MonoRectangleChunk() {
     this.MouseUp = function () {
         this.IsClick = false;
     }
+
+    this.HorizontalDistanceTo = function (y) {
+        if (y < this.Origin.Y) {
+            return null;
+        }
+
+        if (y > (this.Origin.Y + this.Height)) {
+            return null;
+        }
+
+        return this.Origin.X;
+    }
 }
 
 MonoRectangleChunk.prototype.Label = "MR";
@@ -567,6 +625,18 @@ function MonoBitPlaneChunk() {
 
     this.MouseUp = function () {
         this.IsClick = false;
+    }
+
+    this.HorizontalDistanceTo = function (y) {
+        if (y < this.Origin.Y) {
+            return null;
+        }
+
+        if (y > (this.Origin.Y + this.Height)) {
+            return null;
+        }
+
+        return this.BitPlane.HorizontalDistanceTo(y - this.Origin.Y) + this.Origin.X;
     }
 }
 
@@ -703,6 +773,18 @@ function ColorRectangleChunk() {
 
     this.GetDimensions = function () {
         return new SxzPoint(this.Width, this.Height);
+    }
+
+    this.HorizontalDistanceTo = function (y) {
+        if (y < this.Origin.Y) {
+            return null;
+        }
+
+        if (y > (this.Origin.Y + this.Height)) {
+            return null;
+        }
+
+        return this.Origin.X;
     }
 }
 
@@ -875,6 +957,18 @@ function ColorBitPlaneChunk() {
     this.GetDimensions = function () {
         return new SxzPoint(this.Width, this.Height);
     }
+
+    this.HorizontalDistanceTo = function (y) {
+        if (y < this.Origin.Y) {
+            return null;
+        }
+
+        if (y > (this.Origin.Y + this.Height)) {
+            return null;
+        }
+
+        return this.BitPlane.HorizontalDistanceTo(y - this.Origin.Y) + this.Origin.X;
+    }
 }
 
 ColorBitPlaneChunk.prototype.Label = "CB";
@@ -943,6 +1037,16 @@ function BitPlane(size, width) {
     this.UnDrawLocation = function (x, y) {
         var location = (y * this.Width) + x;
         this.Data[location] = false;
+    }
+
+    this.HorizontalDistanceTo = function (y) {
+        for (var x = 0; x <= this.Width; x++) {
+            if (this.HasColor(x, y)) {
+                return x;
+            }
+        }
+
+        return 9007199254740992;
     }
 
     this.GetPixelCount = function () {

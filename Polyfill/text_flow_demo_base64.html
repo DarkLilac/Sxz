@@ -30,7 +30,7 @@
         Text Flow Around Sxz Image</h1>
         <div class="container">
     <p>
-        Since a Sxz image need not be rectangular, text can be drawn around an image in a non-rectangular fashion.  Inpsired by this site's <a href="http://razvancaliman.com/writing/css-shapes-editor-chrome/">CSS Shapes</a> editor.
+        Since a Sxz image need not be rectangular, text can be drawn around an image in a non-rectangular fashion.  This demo is inpsired by <a href="http://razvancaliman.com/writing/css-shapes-editor-chrome/">CSS Shapes</a> editor.
         The distinction is that paths are not required since Sxz has an irregular border once the white background of the image below was removed when it was converted from PNG to Sxz.  This demo is limited owing to a lack
         of completeness for laying out text and drawing on the Canvas element.  It's assumed that a web browser's first class support for Sxz would render better.  Image courtesy of <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Wikipedia-W-visual-balanced.svg/500px-Wikipedia-W-visual-balanced.svg.png">Wikimedia</a>.
 
@@ -41,13 +41,7 @@
             <canvas id="canvasid" width="600" height="600" style="border: 1px solid #000000;"></canvas>
         </div>
         <div class="second">              
-            <form><textarea id="mainInput" rows="20" cols="50">Alas! he gets nothing by that. In our last conflict four of his five wits went halting off, and 
-now is the whole man governed with one: so that if 
-he have wit enough to keep himself warm, let him 
-bear it for a difference between himself and his 
-horse; for it is all the wealth that he hath left 
-to be known a reasonable creature. Who is his 
-companion now? He hath every month a new sworn brother. -Much Ado About Nothing</textarea> <input type="button" title="Draw"  value="Draw"  onclick="DrawText();" /></form>
+            <form><textarea id="mainInput" rows="20" cols="50">Alas! he gets nothing by that. In our last conflict four of his five wits went halting off, and now is the whole man governed with one: so that if he have wit enough to keep himself warm, let him bear it for a difference between himself and his horse; for it is all the wealth that he hath left to be known a reasonable creature. Who is his companion now? He hath every month a new sworn brother. -Much Ado About Nothing</textarea> <input type="button" title="Draw"  value="Draw"  onclick="DrawText();" /></form>
         </div>
     </div>
     <script>
@@ -115,7 +109,7 @@ companion now? He hath every month a new sworn brother. -Much Ado About Nothing<
             var words = text.split(' ');
             var line = '';
 
-            for(var n = 0; n < words.length; n++) {
+            for (var n = 0; n < words.length; n++) {
                 var testLine = line + words[n] + ' ';
                 var metrics = context.measureText(testLine);
                 //put a little 5 pixel buffer around image
