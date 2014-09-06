@@ -4,7 +4,7 @@ Sxz
 Sxz Reference Implementation
 
 <h3>About</h3>
-Sxz is a hybrid vector/raster binary image format designed for low-entropy(non-photographic) images.  Sxz can attain superior compression over PNG in some cases, but not all due to the immaturity of the encoder.  Two decoders are provided in C# and Javascript for demonstration.
+Sxz is a hybrid vector/raster binary image format designed for low-entropy(non-photographic) images.  It allows for non-rectangular shapes and holes.  Sxz can attain superior compression over PNG in some cases, but not all due to the immaturity of the encoder.  Two decoders are provided in C# and Javascript for demonstration.
 
 The Sxz Reference Implementation is released under LGPL license.  The Sxz Polyfill in Javascript is released under MIT license.  The Polyfill demos are released on CC0 license.
 
@@ -21,8 +21,9 @@ Tested on Firefox 29+ and Chrome 36
 
 <h3>Demos</h3>
 Demos are located in the Polyfill folder along with the Javascript decoder/rasterer sxz.js.<br />
+New: <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/text_flow_demo_base64.html">Text Flow like CSS Regions</a> <br />
 <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/art_direction_demo_base64.html">Art Direction</a> <br />
 <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/click_by_chunk_demo_base64.html">Image Map Demo</a> <br />
 <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/click_by_location_demo_base64.html">Another Image Map Demo</a><br />
 <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/image_with_hole_demo_base64.html">Image with a hole, and clickable</a><br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/iphone_scale_demo_base64.html">Example of image map working after scaling image</a> <br />
+<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/iphone_scale_demo_base64.html">Example of image map working after scaling</a> <br />
