@@ -11,10 +11,10 @@ The Sxz Reference Implementation is released under LGPL license.  The Sxz Polyfi
 Sxz is a patent-unecumbered, royalty free image format.
 
 <h3>Design</h3>
-Sxz draws heavily from PNG.  It has no built in compression relying on an outside mechanism such as gzip.  It uses paletted index only color storage, but allows for multiple palettes per image.  Each image consists of one or more frames with one or more chunks in each frame.  The interpretation of each frame is left to the decoder.
+Sxz draws heavily from PNG.  Sxz differs from many other image formats in that it is designed to be slow encoding and fast decoding.  This will allow the encoder the option to check many different possible encoding strategies potentially.  It has no built in compression relying on an outside mechanism such as gzip.  It uses paletted index only color storage, but allows for multiple palettes per image.  Sxz stores more than 256 and less 100 colors very well.   Each image consists of one or more frames with one or more chunks in each frame.  The interpretation of each frame is left to the decoder.
 
 <h3>Responsive Images</h3>
-Sxz supports two important features of responsive imaging.  It can do clickable image maps using the data in the image itself without the need for an extra map file.  It can also scale parts of itself differently to achieve <a href="http://usecases.responsiveimages.org/#art-direction">art direction</a>.  By splitting the image into separate frames, each frame can be treated differently by the decoder.
+Sxz supports  features of responsive imaging.  It can do clickable image maps using the data in the image itself without the need for an extra map file.  It can also scale parts of itself differently to achieve <a href="http://usecases.responsiveimages.org/#art-direction">art direction</a>.  By splitting the image into separate frames, each frame can be treated differently by the decoder.  It also support text flow around non-rectangular areas.
 
 <h3>Platform</h3>
 Tested on Firefox 29+ and Chrome 36
