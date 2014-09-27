@@ -74,16 +74,9 @@ namespace Library
             return BitPlane.HasColor(x - Origin.X, y - Origin.Y) ? White : Black;
         }
 
-        public void SetColor(SxzColor color, int x, int y)
+        public void SetColor(int x, int y)
         {
-            if (color.Equals(Black))
-            {
-                BitPlane.UnDrawLocation(x - Origin.X, y - Origin.Y);
-            }
-            else
-            {
-                BitPlane.DrawLocation(x - Origin.X, y - Origin.Y);
-            }
+            BitPlane.DrawLocation(x - Origin.X, y - Origin.Y);
         }
 
         public bool IsBackground()

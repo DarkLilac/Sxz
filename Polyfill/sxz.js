@@ -2,7 +2,7 @@
 The Sxz Polyfill is released under the MIT License.
 */
 function Sxz() {
-    this.Container = new Container();
+   
 
     //Use built in second rate scaling for now
     this.Scale = function (frame, width, height) {
@@ -63,9 +63,15 @@ function Sxz() {
     }
 
     this.Render = function () {
-        var context = this.Canvas.getContext("2d");
+        this.RenderCanvas(this.Canvas);
+    }
+
+    this.RenderCanvas = function (canvas) {
+        var context = canvas.getContext("2d");
         var boundingBox = new SxzPoint(0, 0);
         this.Container.EnsureDimensions(boundingBox);
+        canvas.width = boundingBox.X;
+        canvas.height = boundingBox.Y;
 
         for (var f = 0; f < this.Container.Frames.length; f++) {
             var frame = this.Container.Frames[f];
@@ -73,12 +79,14 @@ function Sxz() {
         }
     }
 
-	this.LoadLocal = function (data, canvas, callback) {
+    this.LoadLocal = function (data, canvas, callback) {
+        this.Container = new Container();
 		if (typeof (callback) != 'undefined') {
 			canvas.addEventListener('mousedown', callback, false);
 		}
 
-		var raw = window.atob(data);
+        //newlines don't work good in IE, so replace
+        var raw = window.atob(data.replace(/\s/g, ''));
 		var rawLength = raw.length;
 		//parse the data here
 		var array = new Uint8Array(new ArrayBuffer(rawLength));
@@ -93,18 +101,24 @@ function Sxz() {
 		this.Render();
     }
 
-    this.HoritontalDistanceTo = function (y) {
-        var result = 9007199254740992;
-        for (var f = 0; f < this.Container.Frames.length; f++) {
-            var frame = this.Container.Frames[f];
-
-            var temp = frame.HorizontalDistanceTo(y);
-            if (temp < result) {
-                result = temp;
+    //height of sandbag div
+    this.ComputeIntervals = function (height) {
+        var boundingBox = new SxzPoint(0, 0);
+        this.Container.EnsureDimensions(boundingBox);
+        var x = Math.round(boundingBox.X / 2);
+        var intervals = new Array();
+        // alert('interval size is ' + Math.round(boundingBox.Y / height));
+        for (var y = 0; y < boundingBox.Y; y = y + height) {
+            var interval = new RasterInterval(y, x, x);
+            for (var f = 0; f < this.Container.Frames.length; f++) {
+                var frame = this.Container.Frames[f];
+                frame.ComputeInterval(interval);
             }
+
+            intervals.push(interval);
         }
 
-        return result;
+        return intervals;
     }
 }
 
@@ -118,7 +132,7 @@ Sxz.prototype.Load = function (sxz, url, canvas, callback) {
 
     xhr.onload = function () {
         var data = new Uint8Array(xhr.response || xhr.mozResponseArrayBuffer);
-
+        sxz.Container = new Container();
         sxz.Container.SetData(data);
         sxz.Canvas = canvas;
 
@@ -245,8 +259,7 @@ function Frame() {
         return null;
     }
 
-    this.HorizontalDistanceTo = function (y) {
-        var result = 9007199254740992;
+    this.ComputeInterval = function (interval) {
         for (var i = this.Chunks.length - 1; i >= 0; i--) {
             var chunk = this.Chunks[i];
             if (chunk.IsPalette()) {
@@ -258,23 +271,16 @@ function Frame() {
             }
 
             var dimensions = chunk.GetDimensions();
-            if (y > dimensions.Y + chunk.Origin.Y) {
+            if (interval.y > dimensions.Y + chunk.Origin.Y) {
                 continue;
             }
 
-            if (y < chunk.Origin.Y) {
+            if (interval.y < chunk.Origin.Y) {
                 continue;
             }
 
-            var temp = chunk.HorizontalDistanceTo(y);
-            if (temp != null) {
-                if (temp < result) {
-                    result = temp;
-                }
-            }
+            chunk.ComputeInterval(interval);
         }
-
-        return result;
     }
 
     this.SetData = function (data, index, size) {
@@ -494,16 +500,22 @@ function MonoRectangleChunk() {
         this.IsClick = false;
     }
 
-    this.HorizontalDistanceTo = function (y) {
-        if (y < this.Origin.Y) {
-            return null;
+    this.ComputeInterval = function (interval) {
+        if (interval.y < this.Origin.Y) {
+            return;
         }
 
-        if (y > (this.Origin.Y + this.Height)) {
-            return null;
+        if (interval.y > (this.Origin.Y + this.Height)) {
+            return;
         }
 
-        return this.Origin.X;
+        if (this.Origin.X < interval.startX) {
+            interval.startX = this.Origin.X;
+        }
+
+        if (this.Origin.X + this.Width > interval.endX) {
+            interval.endX = this.Origin.X + this.Width;
+        }
     }
 }
 
@@ -627,16 +639,26 @@ function MonoBitPlaneChunk() {
         this.IsClick = false;
     }
 
-    this.HorizontalDistanceTo = function (y) {
-        if (y < this.Origin.Y) {
-            return null;
+    this.ComputeInterval = function (interval) {
+        if (interval.y < this.Origin.Y) {
+            return;
         }
 
-        if (y > (this.Origin.Y + this.Height)) {
-            return null;
+        if (interval.y > (this.Origin.Y + this.Height)) {
+            return;
         }
 
-        return this.BitPlane.HorizontalDistanceTo(y - this.Origin.Y) + this.Origin.X;
+        var x = this.BitPlane.HorizontalDistanceTo(interval.y - this.Origin.Y) + this.Origin.X;
+
+        if (x < interval.startX) {
+            interval.startX = x;
+        }
+
+        x = this.BitPlane.HorizontalDistanceFrom(interval.y - this.Origin.Y) + this.Origin.X;
+
+        if (x > interval.endX) {
+            interval.endX = x;
+        }
     }
 }
 
@@ -775,16 +797,22 @@ function ColorRectangleChunk() {
         return new SxzPoint(this.Width, this.Height);
     }
 
-    this.HorizontalDistanceTo = function (y) {
-        if (y < this.Origin.Y) {
-            return null;
+    this.ComputeInterval = function (interval) {
+        if (interval.y < this.Origin.Y) {
+            return;
         }
 
-        if (y > (this.Origin.Y + this.Height)) {
-            return null;
+        if (interval.y > (this.Origin.Y + this.Height)) {
+            return;
         }
 
-        return this.Origin.X;
+        if (this.Origin.X < interval.startX) {
+            interval.startX = this.Origin.X;
+        }
+
+        if (this.Origin.X + this.Width > interval.endX) {
+            interval.endX = this.Origin.X + this.Width;
+        }
     }
 }
 
@@ -958,16 +986,26 @@ function ColorBitPlaneChunk() {
         return new SxzPoint(this.Width, this.Height);
     }
 
-    this.HorizontalDistanceTo = function (y) {
-        if (y < this.Origin.Y) {
-            return null;
+    this.ComputeInterval = function (interval) {
+        if (interval.y < this.Origin.Y) {
+            return;
         }
 
-        if (y > (this.Origin.Y + this.Height)) {
-            return null;
+        if (interval.y > (this.Origin.Y + this.Height)) {
+            return;
         }
 
-        return this.BitPlane.HorizontalDistanceTo(y - this.Origin.Y) + this.Origin.X;
+        var x = this.BitPlane.HorizontalDistanceTo(interval.y - this.Origin.Y) + this.Origin.X;
+
+        if (x < interval.startX) {
+            interval.startX = x;
+        }
+
+        x = this.BitPlane.HorizontalDistanceFrom(interval.y - this.Origin.Y) + this.Origin.X;
+
+        if (x > interval.endX) {
+            interval.endX = x;
+        }
     }
 }
 
@@ -1049,6 +1087,16 @@ function BitPlane(size, width) {
         return 9007199254740992;
     }
 
+    this.HorizontalDistanceFrom = function (y) {
+        for (var x = this.Width; x >= 0; x--) {
+            if (this.HasColor(x, y)) {
+                return x;
+            }
+        }
+
+        return 0;
+    }
+
     this.GetPixelCount = function () {
         var result = 0;
         for (var i = 0; i < this.Data.length; i++) {
@@ -1077,8 +1125,8 @@ BitPlane.prototype.ConvertBytesToBools = function (bytes, size) {
 		for (var j = 0; j < this.Masks.length; j++)
 		{
 			var b = bytes[i];
-			var boolean = (b & this.Masks[j]) != 0;
-			result.push(boolean);
+			var booleanValue = (b & this.Masks[j]) != 0;
+			result.push(booleanValue);
 			index++;
 			if (index >= size)
 			{
@@ -1124,3 +1172,78 @@ BitPlane.prototype.ConvertBoolsToBytes = function (data) {
 
 	return result;
 };
+
+//pulled from https://github.com/adobe-webplatform/css-shapes-polyfill/blob/master/shapes-polyfill.js
+function RasterInterval(y, startX, endX) {
+    this.y = y;
+    this.startX = startX;
+    this.endX = endX;
+}
+
+function cleanUp(element) {
+    var oldParent = element.parentNode;
+    for (oldParent = element.parentNode;
+oldParent && oldParent.hasAttribute && !oldParent.hasAttribute('data-shape-outside-container');
+oldParent = oldParent.parentNode);
+    if (!oldParent || !oldParent.hasAttribute)
+        return;
+    oldParent.parentNode.insertBefore(element, oldParent);
+    oldParent.parentNode.removeChild(oldParent);
+}
+
+function fakeIt(intervals, height, element, cssFloat) {
+    var wrapper = document.createElement('div');
+    //wrapper.style.paddingTop = intervals[0].y  + 'px';
+    var styles;
+    
+
+    for (var i = 0; i < intervals.length; i++) {
+        var sandbag = document.createElement('div');
+        var width = intervals[i].endX;
+        if (intervals[i].startX == intervals[i].endX) {
+            width = 0;
+        }
+
+        styles = {
+            cssFloat: cssFloat,
+            width: width + 'px',
+            height: height + 'px',
+            clear: cssFloat
+            //,backgroundColor: 'red'
+        };
+
+        for (var prop in styles)
+            sandbag.style[prop] = styles[prop];
+        wrapper.appendChild(sandbag);
+    }
+
+    styles = {
+        position: 'relative',
+        width: width + 'px',
+        height: '0',
+        clear: 'both',
+        pointerEvents: 'none'
+    };
+
+    for (var prop in styles)
+        wrapper.style[prop] = styles[prop];
+
+    var parent = element.parentNode, subwrapper,
+        computedStyle = getComputedStyle(parent),
+        borderHeight = parseFloat(computedStyle.borderTop) + parseFloat(computedStyle.borderBottom);
+    styles = {
+        position: 'absolute',
+        top: '0',
+        width: '100%', // will fill the whole width, FF does 'auto' differently
+        height: parent.clientHeight - borderHeight,
+        left: '0'
+    };
+    subwrapper = document.createElement('div');
+    for (prop in styles)
+        subwrapper.style[prop] = styles[prop];
+    wrapper.appendChild(subwrapper);
+    if (element.parentNode)
+        element.parentNode.insertBefore(wrapper, element);
+    subwrapper.appendChild(element);
+    wrapper.setAttribute('data-shape-outside-container', 'true');
+}

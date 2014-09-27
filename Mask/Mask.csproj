@@ -2,18 +2,20 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{10A5657A-AFEA-4E2E-8565-58B33E5937F3}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{C05411B1-1144-42CD-A770-3DD59DFCAB48}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Parser</RootNamespace>
-    <AssemblyName>Parser</AssemblyName>
+    <RootNamespace>Mask</RootNamespace>
+    <AssemblyName>Mask</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,7 +24,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,35 +44,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackgroundChunkContainer.cs" />
-    <Compile Include="BlackWhiteChunkContainer.cs" />
-    <Compile Include="BoundingBox.cs" />
-    <Compile Include="ChunkContainer.cs" />
-    <Compile Include="Location.cs" />
-    <Compile Include="LocationPool.cs" />
-    <Compile Include="MaskRegion.cs" />
-    <Compile Include="MonoBitPlaneChunkContainer.cs" />
-    <Compile Include="MonoChunkContainer.cs" />
-    <Compile Include="MonoRectangleChunkContainer.cs" />
-    <Compile Include="MonoRegion.cs" />
-    <Compile Include="MultiColorBitPlaneChunkContainer.cs" />
-    <Compile Include="MultiColorChunkContainer.cs" />
-    <Compile Include="MultiColorRectangleChunkContainer.cs" />
-    <Compile Include="MultiColorRegion.cs" />
-    <Compile Include="Palette.cs" />
-    <Compile Include="PaletteContainer.cs" />
-    <Compile Include="ParseImage.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Region.cs" />
-    <Compile Include="TransparentBitPlaneChunkContainer.cs" />
-    <Compile Include="TransparentChunkContainer.cs" />
-    <Compile Include="TransparentRectangleChunkContainer.cs" />
-    <Compile Include="TransparentRegion.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{8747F85F-F0EF-4247-A127-D05A1B9D5153}</Project>
       <Name>Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parser\Parser.csproj">
+      <Project>{10A5657A-AFEA-4E2E-8565-58B33E5937F3}</Project>
+      <Name>Parser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{BB97DD9B-A2E6-4635-BA5B-C00A8E64E43B}</Project>
+      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
