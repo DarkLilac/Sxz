@@ -43,6 +43,11 @@ namespace Parser
                 return false;
             }
 
+            if (!base.Inside(location))
+            {
+                return false;
+            }
+
             return true;
         }
 

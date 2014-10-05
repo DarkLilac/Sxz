@@ -2,10 +2,9 @@
 The Sxz Polyfill is released under the MIT License.
 */
 function Sxz() {
-   
 
     //Use built in second rate scaling for now
-    this.Scale = function (frame, width, height) {
+    this.Scale = function (width, height) {
         var boundingBox = new SxzPoint(0, 0);
         this.Container.EnsureDimensions(boundingBox);
 
@@ -13,9 +12,30 @@ function Sxz() {
         tempCanvas.width = boundingBox.X;
         tempCanvas.height = boundingBox.Y;
         var tempContext = tempCanvas.getContext('2d');
-        this.RenderFrame(tempContext, frame, boundingBox)
+        this.RenderCanvas(tempCanvas, boundingBox)
 
-        //this.Canvas.width = this.Canvas.width;
+        this.Canvas.width = width;
+        this.Canvas.height = height;
+        this.Canvas.style.width = width;
+        this.Canvas.style.height = height;
+        var context = this.Canvas.getContext("2d");
+        context.drawImage(tempCanvas, 0, 0, width, height);
+    }
+
+    this.ScaleFrame = function (frame, width, height) {
+        var boundingBox = new SxzPoint(0, 0);
+        frame.EnsureDimensions(boundingBox);
+
+        var tempCanvas = document.createElement('canvas');
+        tempCanvas.width = boundingBox.X;
+        tempCanvas.height = boundingBox.Y;
+        var tempContext = tempCanvas.getContext('2d');
+        this.RenderCanvas(tempCanvas, boundingBox)
+
+        this.Canvas.width = width;
+        this.Canvas.height = height;
+        this.Canvas.style.width = width;
+        this.Canvas.style.height = height;
         var context = this.Canvas.getContext("2d");
         context.drawImage(tempCanvas, 0, 0, width, height);
     }
@@ -79,11 +99,8 @@ function Sxz() {
         }
     }
 
-    this.LoadLocal = function (data, canvas, callback) {
+    this.LoadLocal = function (data, canvas) {
         this.Container = new Container();
-		if (typeof (callback) != 'undefined') {
-			canvas.addEventListener('mousedown', callback, false);
-		}
 
         //newlines don't work good in IE, so replace
         var raw = window.atob(data.replace(/\s/g, ''));
@@ -97,8 +114,6 @@ function Sxz() {
 
 		this.Container.SetData(array);
 		this.Canvas = canvas;
-
-		this.Render();
     }
 
     //height of sandbag div
@@ -107,9 +122,9 @@ function Sxz() {
         this.Container.EnsureDimensions(boundingBox);
         var x = Math.round(boundingBox.X / 2);
         var intervals = new Array();
-        // alert('interval size is ' + Math.round(boundingBox.Y / height));
         for (var y = 0; y < boundingBox.Y; y = y + height) {
-            var interval = new RasterInterval(y, x, x);
+            var interval = new RasterInterval(y, boundingBox.X, 0);
+            interval.totalWidth = boundingBox.X;
             for (var f = 0; f < this.Container.Frames.length; f++) {
                 var frame = this.Container.Frames[f];
                 frame.ComputeInterval(interval);
@@ -124,19 +139,16 @@ function Sxz() {
 
 Sxz.prototype.Load = function (sxz, url, canvas, callback) {
     var xhr = new XMLHttpRequest();
+
     xhr.open("GET", url, true);
     xhr.responseType = "arraybuffer";
-    if (typeof (callback) != 'undefined') {
-        canvas.addEventListener('mousedown', callback, false);
-    }
 
     xhr.onload = function () {
         var data = new Uint8Array(xhr.response || xhr.mozResponseArrayBuffer);
         sxz.Container = new Container();
         sxz.Container.SetData(data);
         sxz.Canvas = canvas;
-
-        sxz.Render();
+        callback(sxz);
     }
 
     xhr.send(null);
@@ -446,7 +458,7 @@ function DefaultPaletteChunk() {
 function MonoRectangleChunk() {
     this.Width = 0;
     this.Height = 0;
-    this.ColorIndex = 0;
+    this.ColorIndex = null;
     this.Origin = new SxzPoint(0, 0);
     this.Palette = new PaletteChunk();
     this.ClickColor = new SxzColor(85, 26, 139);
@@ -484,8 +496,6 @@ function MonoRectangleChunk() {
         if (this.Origin.Y + this.Height > boundingBox.Y) {
             boundingBox.Y = this.Origin.Y + this.Height;
         }
-
-        //alert('later ensure dimension on ' + boundingBox.X + ' ' + boundingBox.Y);
     }
 
     this.GetDimensions = function () {
@@ -510,11 +520,15 @@ function MonoRectangleChunk() {
         }
 
         if (this.Origin.X < interval.startX) {
-            interval.startX = this.Origin.X;
+            if (this.Origin.X > interval.startX) {
+                interval.startX = this.Origin.X;
+            }
         }
 
         if (this.Origin.X + this.Width > interval.endX) {
-            interval.endX = this.Origin.X + this.Width;
+            if (this.Origin.X + this.Width < interval.endX) {
+                interval.endX = this.Origin.X + this.Width;
+            }
         }
     }
 }
@@ -572,7 +586,7 @@ BackgroundChunk.prototype.GetDimensions = function () {
 function MonoBitPlaneChunk() {
     this.Width = 0;
     this.Height = 0;
-    this.ColorIndex = 0;
+    this.ColorIndex = null;
     this.BitPlane = new BitPlane(0, 0);
     this.Origin = new SxzPoint(0, 0);
     this.Palette = new PaletteChunk();
@@ -623,8 +637,6 @@ function MonoBitPlaneChunk() {
         if (this.Origin.Y + this.Height > boundingBox.Y) {
             boundingBox.Y = this.Origin.Y + this.Height;
         }
-
-        //alert('later ensure dimension on ' + boundingBox.X + ' ' + boundingBox.Y);
     }
 
     this.GetDimensions = function () {
@@ -781,8 +793,6 @@ function ColorRectangleChunk() {
         if (this.Origin.Y + this.Height > boundingBox.Y) {
             boundingBox.Y = this.Origin.Y + this.Height;
         }
-
-        //alert('later ensure dimension on ' + boundingBox.X + ' ' + boundingBox.Y);
     }
 
     this.MouseDown = function () {
@@ -807,11 +817,15 @@ function ColorRectangleChunk() {
         }
 
         if (this.Origin.X < interval.startX) {
-            interval.startX = this.Origin.X;
+            if (this.Origin.X < interval.startX) {
+                interval.startX = this.Origin.X;
+            }
         }
 
         if (this.Origin.X + this.Width > interval.endX) {
-            interval.endX = this.Origin.X + this.Width;
+            if (this.Origin.X + this.Width > interval.endX) {
+                interval.endX = this.Origin.X + this.Width;
+            }
         }
     }
 }
@@ -853,8 +867,6 @@ function ColorBitPlaneChunk() {
         var y = ToInt16(data, index);
         index += 2;
         this.Origin = new SxzPoint(x, y);
-
-
         this.Direction = data[index++];
         this.BitPlane = new BitPlane(this.Width * this.Height, this.Width);
         var size = SizeOfBitPlaneInBytes(this.Width * this.Height);
@@ -889,7 +901,7 @@ function ColorBitPlaneChunk() {
                             this.SetByteIndex(values[index++], x, y);
                         }
                         else {
-                            this.SetByteIndex(0, x, y);
+                            this.SetByteIndex(null, x, y);
                         }
                     }
                 }
@@ -902,7 +914,7 @@ function ColorBitPlaneChunk() {
                             this.SetByteIndex(values[index++], x, y);
                         }
                         else {
-                            this.SetByteIndex(0, x, y);
+                            this.SetByteIndex(null, x, y);
                         }
                     }
                 }
@@ -915,7 +927,7 @@ function ColorBitPlaneChunk() {
                             this.SetByteIndex(values[index++], x, y);
                         }
                         else {
-                            this.SetByteIndex(0, x, y);
+                            this.SetByteIndex(null, x, y);
                         }
                     }
                 }
@@ -928,7 +940,7 @@ function ColorBitPlaneChunk() {
                             this.SetByteIndex(values[index++], x, y);
                         }
                         else {
-                            this.SetByteIndex(0, x, y);
+                            this.SetByteIndex(null, x, y);
                         }
                     }
                 }
@@ -995,16 +1007,16 @@ function ColorBitPlaneChunk() {
             return;
         }
 
-        var x = this.BitPlane.HorizontalDistanceTo(interval.y - this.Origin.Y) + this.Origin.X;
+        var start = this.BitPlane.HorizontalDistanceTo(interval.y - this.Origin.Y) + this.Origin.X;
 
-        if (x < interval.startX) {
-            interval.startX = x;
+        if (start < interval.startX) {
+            interval.startX = start;
         }
 
-        x = this.BitPlane.HorizontalDistanceFrom(interval.y - this.Origin.Y) + this.Origin.X;
+        var end = this.BitPlane.HorizontalDistanceFrom(interval.y - this.Origin.Y) + this.Origin.X;
 
-        if (x > interval.endX) {
-            interval.endX = x;
+        if (end > interval.endX) {
+            interval.endX = end;
         }
     }
 }
@@ -1084,11 +1096,11 @@ function BitPlane(size, width) {
             }
         }
 
-        return 9007199254740992;
+        return this.Width;
     }
 
     this.HorizontalDistanceFrom = function (y) {
-        for (var x = this.Width; x >= 0; x--) {
+        for (var x = this.Width - 1; x >= 0; x--) {
             if (this.HasColor(x, y)) {
                 return x;
             }
@@ -1192,14 +1204,22 @@ oldParent = oldParent.parentNode);
 }
 
 function fakeIt(intervals, height, element, cssFloat) {
+    fakeItScale(intervals, height, element, cssFloat, 1);
+}
+
+function fakeItScale(intervals, height, element, cssFloat, scale) {
     var wrapper = document.createElement('div');
-    //wrapper.style.paddingTop = intervals[0].y  + 'px';
     var styles;
-    
+    height = Math.round(height * scale);
 
     for (var i = 0; i < intervals.length; i++) {
         var sandbag = document.createElement('div');
-        var width = intervals[i].endX;
+        //TODO: male the 5 pixel buffer a configurable option
+        var width = Math.round(intervals[i].endX * scale) + 5;
+        if (cssFloat == 'right') {
+            width = Math.round((intervals[i].totalWidth - intervals[i].startX) * scale) + 5;
+        }
+
         if (intervals[i].startX == intervals[i].endX) {
             width = 0;
         }
@@ -1219,7 +1239,8 @@ function fakeIt(intervals, height, element, cssFloat) {
 
     styles = {
         position: 'relative',
-        width: width + 'px',
+        //width: width + 'px',
+        width: 'auto',
         height: '0',
         clear: 'both',
         pointerEvents: 'none'
@@ -1247,3 +1268,14 @@ function fakeIt(intervals, height, element, cssFloat) {
     subwrapper.appendChild(element);
     wrapper.setAttribute('data-shape-outside-container', 'true');
 }
+
+var addEvent = function (elem, type, eventHandle) {
+    if (elem == null || typeof (elem) == 'undefined') return;
+    if (elem.addEventListener) {
+        elem.addEventListener(type, eventHandle, false);
+    } else if (elem.attachEvent) {
+        elem.attachEvent("on" + type, eventHandle);
+    } else {
+        elem["on" + type] = eventHandle;
+    }
+};

@@ -35,6 +35,11 @@ namespace Parser
 
         public override bool IsValid(Location location)
         {
+            if (!base.Inside(location))
+            {
+                return false;
+            }
+
             return location.Color.Equals(Color);
         }
 

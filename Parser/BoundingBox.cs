@@ -137,5 +137,15 @@ namespace Parser
         {
             return UpperLeft.X + ", " + UpperLeft.Y + " " + LowerRight.X + ", " + LowerRight.Y;
         }
+
+        public BoundingBox Clone()
+        {
+            BoundingBox result = new BoundingBox();
+            result.UpperLeft.X = this.UpperLeft.X;
+            result.UpperLeft.Y = this.UpperLeft.Y;
+            result.LowerRight.X = this.LowerRight.X;
+            result.LowerRight.Y = this.LowerRight.Y;
+            return result;
+        }
     }
 }

@@ -47,6 +47,18 @@ namespace Parser
             BoundingBox.Add(location.Point);
         }
 
+        public int Size()
+        {
+            return Locations.Count;
+        }
+
+        public bool Inside(Location location)
+        {
+            BoundingBox clone = BoundingBox.Clone();
+            clone.Add(location.Point);
+            return clone.Area() < (Math.Pow(2, 15) - 1);
+        }
+
         /// <summary>
         /// Gets all the locations in this region, within this sub-boundingbox
         /// </summary>
