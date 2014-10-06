@@ -12,7 +12,7 @@
         .second
         {
             width: 500px;
-            height: 200px;
+            height: 300px;
         }
         .third
         {
@@ -50,29 +50,36 @@
         ctx.fill();
 
         var sxz = new Sxz();
-        sxz.Load(sxz, "sxz_with_white_background.sxz", canvas, MouseDown);
+        addEvent(canvas, 'mousedown', MouseDown);
+        sxz.Load(sxz, "sxz_with_white_background.sxz", canvas, Render);
 
         var canvas2 = document.getElementById('canvasid2');
         var sxz2 = new Sxz();
-        sxz2.Load(sxz2, "sxz_with_white_background.sxz", canvas2, MouseDown2);
+        addEvent(canvas2, 'mousedown', MouseDown2);
+        sxz2.Load(sxz2, "sxz_with_white_background.sxz", canvas2, Render);
 
         var canvas3 = document.getElementById('canvasid3');
         var sxz3 = new Sxz();
-        sxz3.Load(sxz3, "sxz_with_white_background.sxz", canvas3, MouseDown3);
+        addEvent(canvas3, 'mousedown', MouseDown3);
+        sxz3.Load(sxz3, "sxz_with_white_background.sxz", canvas3, Render);
+
+        function Render(sxz) {
+            sxz.Render();
+        }
 
         function MouseDown(event) {
             //alert('mouse down');
             ctx.rect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "blue";
             ctx.fill();
-            sxz.Scale(sxz.Container.Frames[0], 320, 320);
-            sxz.Scale(sxz.Container.Frames[1], 480, 480);
+            sxz.ScaleFrame(sxz.Container.Frames[0], 320, 320);
+            sxz.ScaleFrame(sxz.Container.Frames[1], 480, 480);
         }
 
         function MouseDown2(event) {
             //alert('mouse down');
             canvas2.width = canvas2.width;
-            sxz2.Scale(sxz2.Container.Frames[1], 160, 160);
+            sxz2.ScaleFrame(sxz2.Container.Frames[1], 160, 160);
         }
 
         function MouseDown3(event) {

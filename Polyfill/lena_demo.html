@@ -12,7 +12,11 @@
 
         var canvas = document.getElementById('canvasid');
         var sxz = new Sxz();
-        sxz.Load(sxz, "lena_std.sxz", canvas, null);
+        sxz.Load(sxz, "lena_std.sxz", canvas, Render);
+
+        function Render(sxz) {
+            sxz.Render();
+        }
     </script>
 </body>
 </html>

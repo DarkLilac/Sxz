@@ -43,8 +43,11 @@
         <script>
             var canvas = document.getElementById('canvasid');
             var sxz = new Sxz();
-            sxz.Load(sxz, "vertical_gradient_filtered_left.sxz", canvas, null);
+            sxz.Load(sxz, "vertical_gradient_filtered_left.sxz", canvas, Render);
 
+            function Render(sxz) {
+                sxz.Render();
+            }
         </script>
 </body>
 </html>

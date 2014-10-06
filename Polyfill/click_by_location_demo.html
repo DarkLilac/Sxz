@@ -50,7 +50,12 @@
     <script>
         var canvas = document.getElementById('canvasid');
         var sxz = new Sxz();
-        sxz.Load(sxz, "sxz.sxz", canvas, MouseDown);
+        addEvent(canvas, 'mousedown', MouseDown);
+        sxz.Load(sxz, "sxz.sxz", canvas, Render);
+
+        function Render(sxz) {
+            sxz.Render();
+        }
 
         function MouseDown(event) {
             var x = event.pageX;
