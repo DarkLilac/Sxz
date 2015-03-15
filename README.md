@@ -21,8 +21,6 @@ Tested on Firefox 29+ and Chrome 36
 
 <h3>Demos</h3>
 Demos are located in the Polyfill folder along with the Javascript decoder/rasterer sxz.js.<br />
-New: 
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/transparency_demo_base64.html">Transparent Jpeg</a> <br />
 
 <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/text_flow_demo_base64.html">Text Flow like CSS Shapes</a> <br />
 <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/art_direction_demo_base64.html">Art Direction</a> <br />
