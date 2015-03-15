@@ -1,7 +1,0 @@
-C:\home\chris\Sxz\Parser\bin\Debug\Parser.dll
-C:\home\chris\Sxz\Parser\bin\Debug\Parser.pdb
-C:\home\chris\Sxz\Parser\bin\Debug\Library.dll
-C:\home\chris\Sxz\Parser\bin\Debug\Library.pdb
-C:\home\chris\Sxz\Parser\obj\Debug\Parser.dll
-C:\home\chris\Sxz\Parser\obj\Debug\Parser.pdb
-C:\home\chris\Sxz\Parser\obj\Debug\ResolveAssemblyReference.cache

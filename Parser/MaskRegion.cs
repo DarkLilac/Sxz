@@ -47,11 +47,11 @@ namespace Parser
             base.Add(location);
         }
 
-        /// <summary>
-        /// To return a RectangleChunk we will need the bounding box and a check for missing locations
-        /// </summary>
-        /// <returns></returns>
-        public override HashSet<ChunkContainer> GetChunks(LocationPool locationPool)
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
+        public BoundingBox GetBoundingBox()
         {
             BoundingBox boundingBox = new BoundingBox();
             foreach (Location location in Locations)
@@ -59,11 +59,29 @@ namespace Parser
                 boundingBox.Add(location.Point);
             }
 
+            return boundingBox;
+        }
+
+        /// <summary>
+        /// To return a RectangleChunk we will need the bounding box and a check for missing locations
+        /// </summary>
+        /// <returns></returns>
+        public override HashSet<ChunkContainer> GetChunks(LocationPool locationPool)
+        {
+            //BoundingBox boundingBox = new BoundingBox();
+            //foreach (Location location in Locations)
+            //{
+            //    boundingBox.Add(location.Point);
+            //}
+
             BlackWhiteBitPlaneChunk blackWhiteBitPlaneChunk = new BlackWhiteBitPlaneChunk();
-            blackWhiteBitPlaneChunk.Width = boundingBox.Width();
-            blackWhiteBitPlaneChunk.Height = boundingBox.Height();
+            //blackWhiteBitPlaneChunk.Width = boundingBox.Width();
+            //blackWhiteBitPlaneChunk.Height = boundingBox.Height();
+            blackWhiteBitPlaneChunk.Width = Width;
+            blackWhiteBitPlaneChunk.Height = Height;
             blackWhiteBitPlaneChunk.Initialize();
-            blackWhiteBitPlaneChunk.Origin = boundingBox.UpperLeft;
+            //blackWhiteBitPlaneChunk.Origin = boundingBox.UpperLeft;
+            blackWhiteBitPlaneChunk.Origin = Origin;
 
             foreach (Location location in Locations)
             {

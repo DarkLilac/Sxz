@@ -40,6 +40,23 @@ function Sxz() {
         context.drawImage(tempCanvas, 0, 0, width, height);
     }
 
+    this.Render = function () {
+        this.RenderCanvas(this.Canvas);
+    }
+
+    this.RenderCanvas = function (canvas) {
+        var context = canvas.getContext("2d");
+        var boundingBox = new SxzPoint(0, 0);
+        this.Container.EnsureDimensions(boundingBox);
+        canvas.width = boundingBox.X;
+        canvas.height = boundingBox.Y;
+
+        for (var f = 0; f < this.Container.Frames.length; f++) {
+            var frame = this.Container.Frames[f];
+            this.RenderFrame(context, frame, boundingBox);
+        }
+    }
+
     this.RenderFrame = function (context, frame, boundingBox) {
         var imageData = context.createImageData(boundingBox.X, boundingBox.Y);
 
@@ -67,6 +84,7 @@ function Sxz() {
 
             var dimensions = chunk.GetDimensions();
             var origin = chunk.Origin
+
             for (var y = origin.Y; y < origin.Y + dimensions.Y; y++) {
                 for (var x = origin.X; x < origin.X + dimensions.X; x++) {
                     var sxzColor = chunk.GetColor(x, y);
@@ -82,21 +100,56 @@ function Sxz() {
         context.putImageData(imageData, 0, 0);
     }
 
-    this.Render = function () {
-        this.RenderCanvas(this.Canvas);
+    this.RenderStencil = function () {
+        this.RenderStencilCanvas(this.Canvas);
     }
 
-    this.RenderCanvas = function (canvas) {
+    this.RenderStencilCanvas = function (canvas) {
         var context = canvas.getContext("2d");
         var boundingBox = new SxzPoint(0, 0);
         this.Container.EnsureDimensions(boundingBox);
-        canvas.width = boundingBox.X;
-        canvas.height = boundingBox.Y;
+        //Since the image is already drawn on the canvas, we assume the canvas is set to the correct size already
+        //        canvas.width = boundingBox.X;
+        //        canvas.height = boundingBox.Y;
 
         for (var f = 0; f < this.Container.Frames.length; f++) {
             var frame = this.Container.Frames[f];
-            this.RenderFrame(context, frame, boundingBox);
+            this.RenderStencilFrame(context, frame, boundingBox);
         }
+    }
+
+    this.RenderStencilFrame = function (context, frame, boundingBox) {
+        //var imageData = context.createImageData(boundingBox.X, boundingBox.Y);
+        var imageData = context.getImageData(0, 0, boundingBox.X, boundingBox.Y);
+
+        for (var i = 0; i < frame.Chunks.length; i++) {
+            //alert('drawing chunk ' + i);
+            var chunk = frame.Chunks[i];
+            if (chunk.IsPalette() == true) {
+                continue;
+            }
+
+            if (chunk.IsBackground() == true) {
+                //don't render any backgrounds
+                continue;
+            }
+
+            var dimensions = chunk.GetDimensions();
+            var origin = chunk.Origin
+
+            for (var y = origin.Y; y < origin.Y + dimensions.Y; y++) {
+                for (var x = origin.X; x < origin.X + dimensions.X; x++) {
+                    var sxzColor = chunk.GetColor(x, y);
+                    if (sxzColor != null) continue;
+                    imageData.data[(y * boundingBox.X + x) * 4] = 0;
+                    imageData.data[(y * boundingBox.X + x) * 4 + 1] = 0;
+                    imageData.data[(y * boundingBox.X + x) * 4 + 2] = 0;
+                    imageData.data[(y * boundingBox.X + x) * 4 + 3] = 0;
+                }
+            }
+        }
+
+        context.putImageData(imageData, 0, 0);
     }
 
     this.LoadLocal = function (data, canvas) {
@@ -330,6 +383,13 @@ function Frame() {
                     var chunk = new MonoBitPlaneChunk();
                     var chunkSize = ToInt16(data, index + 2);
                     chunk.Palette = paletteChunk;
+                    chunk.SetData(data, index);
+                    this.Chunks.push(chunk);
+                    index += chunkSize + 4;
+                    break;
+                case "BW":
+                    var chunk = new BlackWhiteBitPlaneChunk();
+                    var chunkSize = ToInt16(data, index + 2);
                     chunk.SetData(data, index);
                     this.Chunks.push(chunk);
                     index += chunkSize + 4;
@@ -685,6 +745,110 @@ MonoBitPlaneChunk.prototype.IsPalette = function () {
 };
 
 MonoBitPlaneChunk.prototype.IsTransparent = function () {
+    return false;
+};
+
+function BlackWhiteBitPlaneChunk() {
+    this.Width = 0;
+    this.Height = 0;
+    this.BitPlane = new BitPlane(0, 0);
+    this.Origin = new SxzPoint(0, 0);
+    this.Black = new SxzColor(0, 0, 0);
+    this.White = new SxzColor(255, 255, 255);
+    this.ClickColor = new SxzColor(85, 26, 139);
+    this.IsClick = false;
+
+    this.SetData = function (data, index) {
+        index += 4;
+        this.Width = ToInt16(data, index);
+        index += 2;
+        this.Height = ToInt16(data, index);
+        index += 2;
+        var x = ToInt16(data, index);
+        index += 2;
+        var y = ToInt16(data, index);
+        index += 2;
+        this.Origin = new SxzPoint(x, y);
+
+        this.BitPlane = new BitPlane(this.Width * this.Height, this.Width);
+        var size = SizeOfBitPlaneInBytes(this.Width * this.Height);
+        var bits = new Array();
+        for (var i = index; i < (index + size); i++) {
+            bits.push(data[i]);
+        }
+
+        this.BitPlane.SetData(bits, this.Width * this.Height);
+    }
+
+    this.GetColor = function (x, y) {
+        if (this.BitPlane.HasColor(x - this.Origin.X, y - this.Origin.Y)) {
+            if (this.IsClick == true) {
+                return this.ClickColor;
+            }
+            else {
+                return this.Black;
+            }
+        }
+
+        return null;
+    }
+
+    this.EnsureDimensions = function (boundingBox) {
+        if (this.Origin.X + this.Width > boundingBox.X) {
+            boundingBox.X = this.Origin.X + this.Width;
+        }
+
+        if (this.Origin.Y + this.Height > boundingBox.Y) {
+            boundingBox.Y = this.Origin.Y + this.Height;
+        }
+    }
+
+    this.GetDimensions = function () {
+        return new SxzPoint(this.Width, this.Height);
+    }
+
+    this.MouseDown = function () {
+        this.IsClick = true;
+    }
+
+    this.MouseUp = function () {
+        this.IsClick = false;
+    }
+
+    this.ComputeInterval = function (interval) {
+        if (interval.y < this.Origin.Y) {
+            return;
+        }
+
+        if (interval.y > (this.Origin.Y + this.Height)) {
+            return;
+        }
+
+        var x = this.BitPlane.HorizontalDistanceTo(interval.y - this.Origin.Y) + this.Origin.X;
+
+        if (x < interval.startX) {
+            interval.startX = x;
+        }
+
+        x = this.BitPlane.HorizontalDistanceFrom(interval.y - this.Origin.Y) + this.Origin.X;
+
+        if (x > interval.endX) {
+            interval.endX = x;
+        }
+    }
+}
+
+BlackWhiteBitPlaneChunk.prototype.Label = "BW";
+
+BlackWhiteBitPlaneChunk.prototype.IsBackground = function () {
+    return false;
+};
+
+BlackWhiteBitPlaneChunk.prototype.IsPalette = function () {
+    return false;
+};
+
+BlackWhiteBitPlaneChunk.prototype.IsTransparent = function () {
     return false;
 };
 
@@ -1226,6 +1390,7 @@ function fakeItScale(intervals, height, element, cssFloat, scale) {
 
         styles = {
             cssFloat: cssFloat,
+            pointerEvents: 'none',
             width: width + 'px',
             height: height + 'px',
             clear: cssFloat
@@ -1257,7 +1422,8 @@ function fakeItScale(intervals, height, element, cssFloat, scale) {
         top: '0',
         width: '100%', // will fill the whole width, FF does 'auto' differently
         height: parent.clientHeight - borderHeight,
-        left: '0'
+        left: '0',
+        pointerEvents: 'none'
     };
     subwrapper = document.createElement('div');
     for (prop in styles)
