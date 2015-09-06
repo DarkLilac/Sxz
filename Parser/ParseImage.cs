@@ -78,6 +78,17 @@ namespace Parser
                             continue;
                         }
 
+                        if (pixel.A > 0 && pixel.A < 255)
+                        {
+                            location.Color.Red = (byte)Math.Round((location.Color.Red * (pixel.A / 255.0)) +
+                                    backgroundColor.Red * (1 - pixel.A / 255.0), 0);
+                            location.Color.Green = (byte)Math.Round((location.Color.Green * (pixel.A / 255.0)) +
+                                    backgroundColor.Green * (1 - pixel.A / 255.0), 0);
+                            location.Color.Blue = (byte)Math.Round((location.Color.Blue * (pixel.A / 255.0)) +
+                                    backgroundColor.Blue * (1 - pixel.A / 255.0), 0);
+                                
+                        }
+
                         if (histogram.ContainsKey(location.Color))
                         {
                             int count = histogram[location.Color];
