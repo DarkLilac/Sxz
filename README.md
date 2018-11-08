@@ -21,12 +21,12 @@ Tested on Firefox 29+ and Chrome 36
 
 <h3>Demos</h3>
 Demos are located in the Polyfill folder along with the Javascript decoder/rasterer sxz.js.<br />
-New: <a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/new_google_logo_demo.html">New Google Logo Example</a>
+New: <a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/new_google_logo_demo.html">New Google Logo Example</a>
 <br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/transparency_demo_base64.html">Transparent Jpeg Example</a> <br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/text_flow_demo_base64.html">Text Flow like CSS Shapes</a> <br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/art_direction_demo_base64.html">Art Direction</a> <br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/click_by_chunk_demo_base64.html">Image Map Demo</a> <br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/click_by_location_demo_base64.html">Another Image Map Demo</a><br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/image_with_hole_demo_base64.html">Image with a hole, and clickable</a><br />
-<a href="https://rawgit.com/DarkLilac/Sxz/master/Polyfill/iphone_scale_demo_base64.html">Example of image map working after scaling</a> <br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/transparency_demo_base64.html">Transparent Jpeg Example</a> <br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/text_flow_demo_base64.html">Text Flow like CSS Shapes</a> <br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/art_direction_demo_base64.html">Art Direction</a> <br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/click_by_chunk_demo_base64.html">Image Map Demo</a> <br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/click_by_location_demo_base64.html">Another Image Map Demo</a><br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/image_with_hole_demo_base64.html">Image with a hole, and clickable</a><br />
+<a href="https://raw.githack.com/DarkLilac/Sxz/master/Polyfill/iphone_scale_demo_base64.html">Example of image map working after scaling</a> <br />
